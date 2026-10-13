@@ -1,42 +1,44 @@
-import os
+
+import gradio as gr
 import pandas as pd
 import joblib
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
 
-# Load dataset
-data = pd.read_csv("data/drug200.csv")
+model = joblib.load("model/drug_model.joblib")
+encoder = joblib.load("model/label_encoder.joblib")
+feature_columns = joblib.load("model/feature_columns.joblib")
 
-# Separate features and target
-X = data.drop("Drug", axis=1)
-y = data["Drug"]
 
-# Encode categorical columns
-X = pd.get_dummies(X)
-encoder = LabelEncoder()
-y = encoder.fit_transform(y)
+def predict(age, sex, bp, cholesterol, na_to_k):
+    if age < 0 or na_to_k < 0:
+        return "Enter non-negative values."
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    data = pd.DataFrame(
+        [[age, sex, bp, cholesterol, na_to_k]],
+        columns=["Age", "Sex", "BP", "Cholesterol", "Na_to_K"],
+    )
+
+    data = pd.get_dummies(data)
+    data = data.reindex(columns=feature_columns, fill_value=0)
+
+    prediction = model.predict(data)
+    drug = encoder.inverse_transform(prediction)[0]
+
+    return f"Predicted Drug Class: {drug}"
+
+
+demo = gr.Interface(
+    fn=predict,
+    inputs=[
+        gr.Number(label="Age", value=30),
+        gr.Dropdown(["F", "M"], label="Sex"),
+        gr.Dropdown(["LOW", "NORMAL", "HIGH"], label="Blood Pressure"),
+        gr.Dropdown(["NORMAL", "HIGH"], label="Cholesterol"),
+        gr.Number(label="Na_to_K", value=15),
+    ],
+    outputs=gr.Textbox(label="Predicted Drug"),
+    title="Drug Classification",
+    description="Predict a drug class using the trained Random Forest model.",
 )
 
-# Train model
-model = RandomForestClassifier(random_state=42)
-model.fit(X_train, y_train)
-
-# Evaluate model
-predictions = model.predict(X_test)
-print("Accuracy:", accuracy_score(y_test, predictions))
-print("\nClassification Report:")
-print(classification_report(y_test, predictions))
-
-# Save model and encoders
-os.makedirs("model", exist_ok=True)
-joblib.dump(model, "model/drug_model.joblib")
-joblib.dump(encoder, "model/label_encoder.joblib")
-joblib.dump(X.columns.tolist(), "model/feature_columns.joblib")
-
-print("\nModel and preprocessing files saved successfully.")
+if __name__ == "__main__":
+    demo.launch()

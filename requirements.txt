@@ -6,3 +6,4 @@ black
 joblib
 skl2onnx
 onnx
+gradio

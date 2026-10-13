@@ -1,0 +1,51 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML CI/CD Demonstration</title>
+
+  <script type="module"
+    src="https://cdn.jsdelivr.net/npm/@gradio/lite/dist/lite.js">
+  </script>
+
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@gradio/lite/dist/lite.css">
+</head>
+
+<body>
+  <gradio-lite>
+    <gradio-lite-install>
+      gradio
+    </gradio-lite-install>
+
+    <gradio-lite-app>
+import gradio as gr
+
+def predict(age, na_to_k):
+    if age < 0 or na_to_k < 0:
+        return "Enter non-negative values."
+
+    return (
+        "Demo interface working. "
+        "Connect the trained model for real predictions."
+    )
+
+demo = gr.Interface(
+    fn=predict,
+    inputs=[
+        gr.Number(label="Age"),
+        gr.Number(label="Na_to_K")
+    ],
+    outputs=gr.Textbox(label="Status"),
+    title="Drug Classification - CI/CD Demo",
+    description="Testing the Gradio-Lite interface."
+)
+
+demo.launch()
+    </gradio-lite-app>
+  </gradio-lite>
+</body>
+</html>
+```
