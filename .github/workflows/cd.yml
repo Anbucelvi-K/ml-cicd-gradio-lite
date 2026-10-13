@@ -1,0 +1,20 @@
+
+name: ML Project CD
+
+on:
+  workflow_run:
+    workflows: ["ML Project CI"]
+    types: [completed]
+    branches: [main, master]
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deployment status
+        run: echo "CI passed. Ready for deployment."
