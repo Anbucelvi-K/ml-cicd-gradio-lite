@@ -1,46 +1,149 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ML CI/CD Demonstration</title>
-
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@gradio/lite/dist/lite.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gradio/lite/dist/lite.css">
+  <title>Drug Classification | ML CI/CD</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #f4f7ff;
+      background: linear-gradient(135deg, #10152f, #172554, #312e81);
+      padding: 35px 16px;
+    }
+    .container { max-width: 900px; margin: auto; }
+    .header { text-align: center; margin-bottom: 28px; }
+    .header h1 { font-size: 32px; margin-bottom: 10px; }
+    .header p { color: #c7d2fe; }
+    .badge {
+      display: inline-block;
+      padding: 7px 13px;
+      border: 1px solid #6366f1;
+      border-radius: 20px;
+      color: #c7d2fe;
+      font-size: 12px;
+    }
+    .card {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 35px rgba(0,0,0,.15);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+    label { display: block; margin-bottom: 8px; color: #e0e7ff; }
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #6366f1;
+      background: #111936;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 13px 20px;
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover { opacity: .9; }
+    #result {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 10px;
+      background: rgba(99,102,241,.18);
+      line-height: 1.6;
+    }
+    .muted { color: #c7d2fe; line-height: 1.6; }
+    footer { text-align: center; color: #a5b4fc; font-size: 13px; }
+  </style>
 </head>
-
 <body>
-  <gradio-lite>
-    <gradio-lite-install>
-      gradio
-    </gradio-lite-install>
+  <main class="container">
+    <header class="header">
+      <span class="badge">MACHINE LEARNING · CI/CD</span>
+      <h1>💊 Drug Classification</h1>
+      <p>Machine learning deployment demonstration</p>
+    </header>
 
-    <gradio-lite-app>
-import gradio as gr
+    <section class="card">
+      <h2>Prediction Interface</h2>
+      <p class="muted">
+        Enter sample patient features to test the interface.
+        This demo is not connected to the trained model yet.
+      </p>
 
-def predict(age, na_to_k):
-    if age < 0 or na_to_k < 0:
-        return "Enter non-negative values."
+      <form id="predictionForm">
+        <div class="grid">
+          <div>
+            <label for="age">Age</label>
+            <input id="age" type="number" min="1" max="120"
+                   placeholder="e.g. 35" required>
+          </div>
+          <div>
+            <label for="na">Na_to_K ratio</label>
+            <input id="na" type="number" min="0" step="any"
+                   placeholder="e.g. 15.5" required>
+          </div>
+        </div>
+        <button type="submit">Test Interface</button>
+      </form>
+      <div id="result" role="status"></div>
+    </section>
 
-    return (
-        "Demo interface working. "
-        "Connect the trained model for real predictions."
-    )
+    <section class="card">
+      <h2>Deployment Status</h2>
+      <p class="muted">
+        Frontend: Static HTML, CSS and JavaScript<br>
+        Hosting: Hugging Face Spaces<br>
+        Automation: GitHub Actions CI/CD
+      </p>
+      <p class="muted">
+        The interface is a demonstration only. It does not produce
+        real drug recommendations or medical predictions.
+      </p>
+    </section>
 
-demo = gr.Interface(
-    fn=predict,
-    inputs=[
-        gr.Number(label="Age"),
-        gr.Number(label="Na_to_K")
-    ],
-    outputs=gr.Textbox(label="Status"),
-    title="Drug Classification - CI/CD Demo",
-    description="Testing the Gradio-Lite interface."
-)
+    <footer>Drug Classification ML · CI/CD Project</footer>
+  </main>
 
-demo.launch()
-    </gradio-lite-app>
-  </gradio-lite>
+  <script>
+    document.getElementById("predictionForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const age = Number(document.getElementById("age").value);
+      const ratio = Number(document.getElementById("na").value);
+      const result = document.getElementById("result");
+
+      result.style.display = "block";
+
+      if (age < 1 || age > 120 || ratio < 0) {
+        result.textContent = "Please enter valid values.";
+        return;
+      }
+
+      result.textContent =
+        "Interface test successful! Age: " + age +
+        ", Na_to_K ratio: " + ratio +
+        ". No model prediction was performed.";
+    });
+  </script>
 </body>
 </html>
