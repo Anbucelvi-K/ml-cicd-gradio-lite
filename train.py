@@ -1,43 +1,86 @@
-import gradio as gr
-import pandas as pd
+
+from pathlib import Path
+import json
+
 import joblib
+import matplotlib.pyplot as plt
+import pandas as pd
+from skl2onnx import to_onnx
 
-model = joblib.load("model/drug_model.joblib")
-encoder = joblib.load("model/label_encoder.joblib")
-feature_columns = joblib.load("model/feature_columns.joblib")
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    ConfusionMatrixDisplay,
+    f1_score,
+)
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 
+DATA = Path("data/drug200.csv")
+MODEL_DIR = Path("model")
+RESULTS_DIR = Path("results")
 
-def predict(age, sex, bp, cholesterol, na_to_k):
-    if age < 0 or na_to_k < 0:
-        return "Enter non-negative values."
+MODEL_DIR.mkdir(exist_ok=True)
+RESULTS_DIR.mkdir(exist_ok=True)
 
-    data = pd.DataFrame(
-        [[age, sex, bp, cholesterol, na_to_k]],
-        columns=["Age", "Sex", "BP", "Cholesterol", "Na_to_K"],
-    )
+df = pd.read_csv(DATA)
+X = df.drop(columns=["Drug"])
+y = df["Drug"]
 
-    data = pd.get_dummies(data)
-    data = data.reindex(columns=feature_columns, fill_value=0)
+categorical = ["Sex", "BP", "Cholesterol"]
+numerical = ["Age", "Na_to_K"]
 
-    prediction = model.predict(data)
-    drug = encoder.inverse_transform(prediction)[0]
+preprocessor = ColumnTransformer([
+    ("categorical", OneHotEncoder(handle_unknown="ignore"), categorical),
+    ("numerical", "passthrough", numerical),
+])
 
-    return f"Predicted Drug Class: {drug}"
+pipeline = Pipeline([
+    ("preprocessor", preprocessor),
+    ("classifier", RandomForestClassifier(n_estimators=100, random_state=42)),
+])
 
-
-demo = gr.Interface(
-    fn=predict,
-    inputs=[
-        gr.Number(label="Age", value=30),
-        gr.Dropdown(["F", "M"], label="Sex"),
-        gr.Dropdown(["LOW", "NORMAL", "HIGH"], label="Blood Pressure"),
-        gr.Dropdown(["NORMAL", "HIGH"], label="Cholesterol"),
-        gr.Number(label="Na_to_K", value=15),
-    ],
-    outputs=gr.Textbox(label="Predicted Drug"),
-    title="Drug Classification",
-    description="Predict a drug class using the trained Random Forest model.",
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-if __name__ == "__main__":
-    demo.launch()
+pipeline.fit(X_train, y_train)
+predictions = pipeline.predict(X_test)
+
+accuracy = accuracy_score(y_test, predictions)
+f1 = f1_score(y_test, predictions, average="weighted")
+
+joblib.dump(pipeline, MODEL_DIR / "drug_model.joblib")
+
+with open(RESULTS_DIR / "metrics.txt", "w") as f:
+    f.write(f"Accuracy: {accuracy:.4f}\n")
+    f.write(f"Weighted F1-score: {f1:.4f}\n")
+    f.write("\n")
+    f.write(classification_report(y_test, predictions))
+
+ConfusionMatrixDisplay.from_predictions(
+    y_test, predictions, xticks_rotation="vertical"
+)
+plt.tight_layout()
+plt.savefig(RESULTS_DIR / "confusion_matrix.png")
+plt.close()
+
+print(f"Accuracy: {accuracy:.4f}")
+print(f"Weighted F1-score: {f1:.4f}")
+
+sample = X_train.iloc[:1]
+onnx_model = to_onnx(
+    pipeline,
+    sample,
+    target_opset=17,
+    options={id(pipeline): {"zipmap": False}},
+)
+
+with open(MODEL_DIR / "drug_model.onnx", "wb") as f:
+    f.write(onnx_model.SerializeToString())
+
+print("ONNX model exported successfully.")
+print("Training and evaluation completed.")
