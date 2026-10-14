@@ -13,250 +13,153 @@
 
         body {
             margin: 0;
-            padding: 45px 20px;
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f1f5fb;
-            color: #172b46;
+            padding: 30px 20px;
+            font-family: Arial, sans-serif;
         }
 
-        .container {
-            max-width: 650px;
+        .app {
+            max-width: 640px;
             margin: 0 auto;
-            padding: 26px 28px 40px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(30, 50, 80, 0.08);
         }
 
         h1 {
-            margin: 0;
-            text-align: center;
-            font-size: 32px;
-            font-weight: 700;
-            color: #172b46;
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
         .subtitle {
-            margin: 21px 0 20px;
-            text-align: center;
-            font-size: 16px;
-            color: #647894;
-        }
-
-        .status {
-            padding: 17px 16px;
-            margin-bottom: 28px;
-            border-radius: 8px;
-            background: #f0f4f9;
-            color: #172b46;
-            font-size: 16px;
+            margin-bottom: 25px;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            gap: 16px;
         }
 
-        .form-group {
+        .field {
             display: flex;
             flex-direction: column;
-            min-width: 0;
         }
 
         label {
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-size: 14px;
-            font-weight: 700;
-            color: #172b46;
         }
 
         input,
         select {
             width: 100%;
-            height: 44px;
-            padding: 10px 12px;
-            border: 1px solid #d0dbea;
-            border-radius: 9px;
-            background: #ffffff;
-            color: #111827;
-            font-family: inherit;
+            height: 37px;
+            padding: 6px;
             font-size: 15px;
-            outline: none;
         }
 
-        input:focus,
-        select:focus {
-            border-color: #7898c4;
-            box-shadow: 0 0 0 2px rgba(120, 152, 196, 0.15);
+        .status {
+            margin: 18px 0 14px;
+            font-size: 14px;
         }
 
-        .button {
+        .predict-button {
             width: 100%;
-            height: 47px;
-            margin-top: 24px;
-            border: none;
-            border-radius: 8px;
-            background: #94a5bd;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: not-allowed;
-        }
-
-        .disclaimer {
-            margin-top: 18px;
-            color: #c45a32;
-            font-size: 13px;
-            line-height: 1.25;
+            height: 38px;
+            font-size: 15px;
+            cursor: pointer;
         }
 
         .result {
             display: none;
-            margin-top: 18px;
-            padding: 14px;
-            border-radius: 8px;
-            background: #f0f4f9;
-            line-height: 1.5;
+            margin-top: 16px;
+            padding: 12px;
+            border: 1px solid #cccccc;
         }
 
-        @media (max-width: 520px) {
-            body {
-                padding: 20px 12px;
-            }
-
-            .container {
-                padding: 25px 18px 30px;
-            }
-
-            h1 {
-                font-size: 27px;
-            }
-
+        @media (max-width: 480px) {
             .form-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
             }
         }
     </style>
 </head>
 
 <body>
-    <main class="container">
+
+    <main class="app">
 
         <h1>Drug Classification</h1>
 
         <p class="subtitle">
-            Random Forest model · ONNX Runtime Web
+            Drug classification using a machine learning model.
         </p>
 
-        <div class="status" id="status" role="status">
-            Loading model...
-        </div>
-
         <form id="drugForm">
+
             <div class="form-grid">
 
-                <div class="form-group">
+                <div class="field">
                     <label for="age">Age</label>
-                    <input
-                        type="number"
-                        id="age"
-                        name="Age"
-                        min="1"
-                        max="120"
-                        value="30"
-                        required
-                    >
+                    <input type="number" id="age" name="Age"
+                           min="1" max="120" value="30" required>
                 </div>
 
-                <div class="form-group">
+                <div class="field">
                     <label for="sex">Sex</label>
                     <select id="sex" name="Sex" required>
-                        <option value="F" selected>Female (F)</option>
-                        <option value="M">Male (M)</option>
+                        <option value="F">F</option>
+                        <option value="M">M</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="bp">Blood Pressure</label>
+                <div class="field">
+                    <label for="bp">Blood Pressure Category</label>
                     <select id="bp" name="BP" required>
-                        <option value="LOW">Low</option>
-                        <option value="NORMAL" selected>Normal</option>
-                        <option value="HIGH">High</option>
+                        <option value="LOW">LOW</option>
+                        <option value="NORMAL" selected>NORMAL</option>
+                        <option value="HIGH">HIGH</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="cholesterol">Cholesterol</label>
-                    <select
-                        id="cholesterol"
-                        name="Cholesterol"
-                        required
-                    >
-                        <option value="NORMAL" selected>Normal</option>
-                        <option value="HIGH">High</option>
+                <div class="field">
+                    <label for="cholesterol">Cholesterol Category</label>
+                    <select id="cholesterol" name="Cholesterol" required>
+                        <option value="NORMAL" selected>NORMAL</option>
+                        <option value="HIGH">HIGH</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="na_to_k">Na_to_K</label>
-                    <input
-                        type="number"
-                        id="na_to_k"
-                        name="Na_to_K"
-                        min="0"
-                        max="100"
-                        step="any"
-                        value="15"
-                        required
-                    >
+                <div class="field">
+                    <label for="na_to_k">Na_to_K Ratio</label>
+                    <input type="number" id="na_to_k" name="Na_to_K"
+                           min="0.1" max="100" step="any"
+                           value="15.0" required>
                 </div>
 
             </div>
 
-            <button
-                type="submit"
-                class="button"
-                id="predictButton"
-                disabled
-            >
-                Loading model...
+            <div class="status" id="status" role="status">
+                Model prediction is not connected yet.
+            </div>
+
+            <button class="predict-button" type="submit">
+                Predict
             </button>
+
+            <div class="result" id="result" role="status"></div>
+
         </form>
-
-        <div class="result" id="result" role="status"></div>
-
-        <p class="disclaimer">
-            Educational demonstration only. This model must not be used
-            to choose, recommend, or prescribe medication.
-        </p>
 
     </main>
 
     <script>
-        const statusElement = document.getElementById("status");
-        const predictButton = document.getElementById("predictButton");
         const form = document.getElementById("drugForm");
-        const resultElement = document.getElementById("result");
-
-        // Prediction is not connected to the trained model yet.
-        // Keep the button disabled until a working prediction
-        // backend or ONNX Runtime Web integration is configured.
-
-        statusElement.textContent =
-            "Interface loaded. Model prediction is not connected yet.";
-
-        predictButton.textContent = "Prediction Unavailable";
+        const result = document.getElementById("result");
 
         form.addEventListener("submit", function (event) {
             event.preventDefault();
 
-            resultElement.style.display = "block";
-            resultElement.textContent =
-                "Prediction is not connected yet. Please configure " +
-                "the model-loading and prediction backend.";
+            result.style.display = "block";
+            result.textContent =
+                "Connect the trained model to enable actual predictions.";
         });
     </script>
 
