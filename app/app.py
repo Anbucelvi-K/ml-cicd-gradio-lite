@@ -1,4 +1,3 @@
-
 import gradio as gr
 
 
@@ -6,10 +5,7 @@ def predict(age, na_to_k):
     if age < 0 or na_to_k < 0:
         return "Enter non-negative values."
 
-    return (
-        "Demo interface working. "
-        "Connect the trained model for real predictions."
-    )
+    return "Demo interface working. " "Connect the trained model for real predictions."
 
 
 demo = gr.Interface(
