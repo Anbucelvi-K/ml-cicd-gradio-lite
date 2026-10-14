@@ -1,4 +1,3 @@
-
 from pathlib import Path
 
 import joblib
@@ -47,10 +46,13 @@ preprocessor = ColumnTransformer(
 pipeline = Pipeline(
     [
         ("preprocessor", preprocessor),
-        ("classifier", RandomForestClassifier(
-            n_estimators=100,
-            random_state=42,
-        )),
+        (
+            "classifier",
+            RandomForestClassifier(
+                n_estimators=100,
+                random_state=42,
+            ),
+        ),
     ]
 )
 
@@ -84,9 +86,7 @@ with open(RESULTS_DIR / "metrics.txt", "w", encoding="utf-8") as f:
     f.write(classification_report(y_test, predictions))
 
 # 10. Save confusion matrix
-ConfusionMatrixDisplay.from_predictions(
-    y_test, predictions, xticks_rotation="vertical"
-)
+ConfusionMatrixDisplay.from_predictions(y_test, predictions, xticks_rotation="vertical")
 plt.tight_layout()
 plt.savefig(RESULTS_DIR / "confusion_matrix.png")
 plt.close()
