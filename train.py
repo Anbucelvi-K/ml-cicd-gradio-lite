@@ -1,4 +1,4 @@
-```python
+
 from pathlib import Path
 
 import joblib
@@ -142,4 +142,3 @@ with open(MODEL_DIR / "drug_model.onnx", "wb") as f:
 print("Joblib model saved successfully.")
 print("ONNX model exported successfully.")
 print("Training and evaluation completed.")
-```
