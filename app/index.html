@@ -2,148 +2,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drug Classification | ML CI/CD</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      color: #f4f7ff;
-      background: linear-gradient(135deg, #10152f, #172554, #312e81);
-      padding: 35px 16px;
-    }
-    .container { max-width: 900px; margin: auto; }
-    .header { text-align: center; margin-bottom: 28px; }
-    .header h1 { font-size: 32px; margin-bottom: 10px; }
-    .header p { color: #c7d2fe; }
-    .badge {
-      display: inline-block;
-      padding: 7px 13px;
-      border: 1px solid #6366f1;
-      border-radius: 20px;
-      color: #c7d2fe;
-      font-size: 12px;
-    }
-    .card {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 18px;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 12px 35px rgba(0,0,0,.15);
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-    }
-    label { display: block; margin-bottom: 8px; color: #e0e7ff; }
-    input {
-      width: 100%;
-      padding: 13px;
-      border-radius: 9px;
-      border: 1px solid #6366f1;
-      background: #111936;
-      color: white;
-      font-size: 16px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 13px 20px;
-      width: 100%;
-      border: 0;
-      border-radius: 9px;
-      background: linear-gradient(90deg, #6366f1, #a855f7);
-      color: white;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover { opacity: .9; }
-    #result {
-      display: none;
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 10px;
-      background: rgba(99,102,241,.18);
-      line-height: 1.6;
-    }
-    .muted { color: #c7d2fe; line-height: 1.6; }
-    footer { text-align: center; color: #a5b4fc; font-size: 13px; }
-  </style>
-</head>
-<body>
-  <main class="container">
-    <header class="header">
-      <span class="badge">MACHINE LEARNING · CI/CD</span>
-      <h1>💊 Drug Classification</h1>
-      <p>Machine learning deployment demonstration</p>
-    </header>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>Drug Classification | ML CI/CD Platform</title>
 
+<style>
+:root {
+  --bg:#0b1020;
+  --panel:#141c33;
+  --panel2:#1b2542;
+  --text:#f4f7ff;
+  --muted:#a9b5d2;
+  --purple:#a78bfa;
+  --blue:#60a5fa;
+  --cyan:#67e8f9;
+  --green:#34d399;
+  --border:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;color:var(--text);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(ellipse at 5% 0%,#29265d 0,transparent 38%),
+    radial-gradient(ellipse at 100% 20%,#17385c 0,transparent 35%),
+    var(--bg);
+  min-height:100vh;
+}
+.container{max-width:1180px;margin:auto;padding:24px}
+nav{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;padding:12px 0 25px;
+  border-bottom:1px solid var(--border)
+}
+.brand{font-weight:800;font-size:18px}
+.brand span{color:var(--purple)}
+.status{
+  color:var(--green);font-size:12px;
+  padding:8px 12px;border:1px solid #236b59;
+  background:#10342d;border-radius:30px
+}
+.hero{padding:44px 0 28px}
+.eyebrow{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:2px}
+h1{font-size:clamp(32px,5vw,53px);line-height:1.1;margin:15px 0}
+.gradient{
+  background:linear-gradient(90deg,#a78bfa,#60a5fa,#67e8f9);
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.subtitle{color:var(--muted);line-height:1.8;max-width:720px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:25px 0}
+.stat,.card{
+  border:1px solid var(--border);border-radius:18px;
+  background:linear-gradient(145deg,rgba(27,37,66,.96),rgba(17,24,45,.94));
+  padding:20px
+}
+.stat strong{display:block;font-size:20px;margin-bottom:6px}
+.stat small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.4fr .8fr;gap:20px}
+.card h2{font-size:21px;margin:0 0 8px}
+.description{color:var(--muted);font-size:13px;line-height:1.7}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:9px}
+input,select{
+  width:100%;padding:13px;color:var(--text);
+  background:#0b1227;border:1px solid #344366;
+  border-radius:10px;font-size:14px;outline:none
+}
+input:focus,select:focus{border-color:var(--purple);box-shadow:0 0 0 3px #a78bfa22}
+.hint{display:block;color:#8493b6;font-size:11px;margin-top:7px}
+button{
+  width:100%;margin-top:23px;padding:15px;
+  border:0;border-radius:11px;
+  background:linear-gradient(100deg,#7c3aed,#4f7cff,#0891b2);
+  color:white;font-weight:800;font-size:15px;cursor:pointer
+}
+button:hover{filter:brightness(1.12)}
+#result{
+  display:none;margin-top:18px;padding:16px;
+  border:1px solid var(--border);border-radius:12px;
+  line-height:1.7;overflow-wrap:anywhere
+}
+.pipeline{display:grid;gap:12px;margin-top:20px}
+.step{
+  display:flex;gap:13px;align-items:flex-start;
+  background:#0d152b;border:1px solid var(--border);
+  border-radius:12px;padding:14px
+}
+.number{
+  min-width:31px;height:31px;border-radius:9px;
+  display:grid;place-items:center;
+  background:#33275e;color:#c4b5fd;font-weight:800
+}
+.step strong{font-size:13px}
+.step p{color:var(--muted);font-size:12px;line-height:1.6;margin:5px 0 0}
+.section{margin-top:22px}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.feature h3{font-size:15px}
+.feature p{font-size:12px;line-height:1.7;color:var(--muted)}
+.tag{font-size:11px;color:var(--cyan);font-weight:800}
+footer{text-align:center;color:#8390af;font-size:12px;padding:35px 0 12px}
+@media(max-width:760px){
+ .layout{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr}
+ .features{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .container{padding:16px}
+ .formgrid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <nav>
+    <div class="brand">⚕️ Drug<span>Classify</span> ML</div>
+    <div class="status">● Static Interface Online</div>
+  </nav>
+
+  <header class="hero">
+    <div class="eyebrow">MACHINE LEARNING · AUTOMATED CI/CD</div>
+    <h1>Intelligent Drug<br><span class="gradient">Classification Platform</span></h1>
+    <p class="subtitle">
+      An end-to-end machine learning project demonstrating data preprocessing,
+      model training, evaluation and automated deployment using GitHub Actions
+      and Hugging Face Spaces.
+    </p>
+  </header>
+
+  <section class="stats">
+    <div class="stat">
+      <strong>Scikit-learn</strong>
+      <small>ML training pipeline</small>
+    </div>
+    <div class="stat">
+      <strong>GitHub Actions</strong>
+      <small>Automated CI/CD workflow</small>
+    </div>
+    <div class="stat">
+      <strong>Hugging Face</strong>
+      <small>Static web deployment</small>
+    </div>
+  </section>
+
+  <main class="layout">
     <section class="card">
-      <h2>Prediction Interface</h2>
-      <p class="muted">
-        Enter sample patient features to test the interface.
-        This demo is not connected to the trained model yet.
+      <h2>Patient Feature Input</h2>
+      <p class="description">
+        Enter the five features used by the Drug200 classification dataset.
+        These values are for a software demonstration, not medical advice.
       </p>
 
       <form id="predictionForm">
-        <div class="grid">
+        <div class="formgrid">
           <div>
-            <label for="age">Age</label>
-            <input id="age" type="number" min="1" max="120"
-                   placeholder="e.g. 35" required>
+            <label for="age">Age (years)</label>
+            <input id="age" type="number" min="15" max="74"
+                   placeholder="Example: 35" required>
+            <span class="hint">Dataset range: approximately 15–74</span>
           </div>
+
           <div>
-            <label for="na">Na_to_K ratio</label>
-            <input id="na" type="number" min="0" step="any"
-                   placeholder="e.g. 15.5" required>
+            <label for="sex">Sex</label>
+            <select id="sex" required>
+              <option value="">Select sex</option>
+              <option value="F">Female (F)</option>
+              <option value="M">Male (M)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="bp">Blood Pressure</label>
+            <select id="bp" required>
+              <option value="">Select blood pressure</option>
+              <option value="LOW">Low</option>
+              <option value="NORMAL">Normal</option>
+              <option value="HIGH">High</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="cholesterol">Cholesterol</label>
+            <select id="cholesterol" required>
+              <option value="">Select cholesterol level</option>
+              <option value="NORMAL">Normal</option>
+              <option value="HIGH">High</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="na">Na_to_K Ratio</label>
+            <input id="na" type="number" min="0.1" max="40"
+                   step="any" placeholder="Example: 15.5" required>
+            <span class="hint">Sodium-to-potassium ratio</span>
           </div>
         </div>
-        <button type="submit">Test Interface</button>
+
+        <button type="submit">Validate Patient Features →</button>
       </form>
-      <div id="result" role="status"></div>
+
+      <div id="result" role="status" aria-live="polite"></div>
     </section>
 
-    <section class="card">
-      <h2>Deployment Status</h2>
-      <p class="muted">
-        Frontend: Static HTML, CSS and JavaScript<br>
-        Hosting: Hugging Face Spaces<br>
-        Automation: GitHub Actions CI/CD
-      </p>
-      <p class="muted">
-        The interface is a demonstration only. It does not produce
-        real drug recommendations or medical predictions.
-      </p>
-    </section>
+    <aside class="card">
+      <h2>ML Pipeline</h2>
+      <p class="description">Project workflow and deployment stages</p>
 
-    <footer>Drug Classification ML · CI/CD Project</footer>
+      <div class="pipeline">
+        <div class="step">
+          <div class="number">01</div>
+          <div><strong>Dataset & ETL</strong>
+            <p>Load Drug200 data and prepare numerical and categorical features.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="number">02</div>
+          <div><strong>Preprocessing</strong>
+            <p>ColumnTransformer and OneHotEncoder prepare model inputs.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="number">03</div>
+          <div><strong>Train & Test</strong>
+            <p>Split the dataset into training and testing subsets.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="number">04</div>
+          <div><strong>Model Evaluation</strong>
+            <p>Evaluate classification performance using accuracy, F1-score and a confusion matrix.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="number">05</div>
+          <div><strong>Automated Deployment</strong>
+            <p>GitHub Actions runs the workflow and deploys project files to Hugging Face Spaces.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
   </main>
 
-  <script>
-    document.getElementById("predictionForm").addEventListener("submit", function(event) {
-      event.preventDefault();
+  <section class="section features">
+    <article class="card feature">
+      <span class="tag">01 / TRAINING</span>
+      <h3>Reproducible ML</h3>
+      <p>Training pipeline with preprocessing and a Random Forest classifier.</p>
+    </article>
+    <article class="card feature">
+      <span class="tag">02 / TESTING</span>
+      <h3>Model Evaluation</h3>
+      <p>Metrics and confusion matrix generated to assess test-set performance.</p>
+    </article>
+    <article class="card feature">
+      <span class="tag">03 / AUTOMATION</span>
+      <h3>CI/CD Workflow</h3>
+      <p>Automated checks and deployment triggered through GitHub Actions.</p>
+    </article>
+  </section>
 
-      const age = Number(document.getElementById("age").value);
-      const ratio = Number(document.getElementById("na").value);
-      const result = document.getElementById("result");
+  <footer>
+    Drug Classification ML · Academic Demonstration · Not for clinical use
+  </footer>
+</div>
 
-      result.style.display = "block";
+<script>
+document.getElementById("predictionForm").addEventListener("submit", function(event) {
+  event.preventDefault();
 
-      if (age < 1 || age > 120 || ratio < 0) {
-        result.textContent = "Please enter valid values.";
-        return;
-      }
+  const age = Number(document.getElementById("age").value);
+  const sex = document.getElementById("sex").value;
+  const bp = document.getElementById("bp").value;
+  const cholesterol = document.getElementById("cholesterol").value;
+  const na = Number(document.getElementById("na").value);
+  const result = document.getElementById("result");
 
-      result.textContent =
-        "Interface test successful! Age: " + age +
-        ", Na_to_K ratio: " + ratio +
-        ". No model prediction was performed.";
-    });
-  </script>
+  result.style.display = "block";
+
+  if (!Number.isFinite(age) || age < 15 || age > 74 ||
+      !Number.isFinite(na) || na <= 0 || na > 40 ||
+      !sex || !bp || !cholesterol) {
+    result.style.background = "#451a2b";
+    result.textContent =
+      "Please check all five fields and enter values within the displayed ranges.";
+    return;
+  }
+
+  result.style.background = "#172554";
+  result.innerHTML = "";
+
+  const title = document.createElement("strong");
+  title.textContent = "Input validation successful";
+  const details = document.createElement("p");
+  details.textContent =
+    "Age: " + age +
+    " | Sex: " + sex +
+    " | BP: " + bp +
+    " | Cholesterol: " + cholesterol +
+    " | Na_to_K: " + na;
+
+  const note = document.createElement("p");
+  note.textContent =
+    "The five input features are valid. A trained model has not been called, so no drug class prediction was generated.";
+
+  result.append(title, details, note);
+});
+</script>
 </body>
 </html>
