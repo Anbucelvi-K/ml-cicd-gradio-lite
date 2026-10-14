@@ -36,7 +36,7 @@ jobs:
         run: |
           hf auth login --token "$HF_TOKEN"
 
-          hf upload "$HF_SPACE_ID" app/ --repo-type space --commit-message "Deploy static application"
+                    python -c "from huggingface_hub import HfApi; HfApi().upload_folder(folder_path='app', repo_id='$HF_SPACE_ID', repo_type='space', commit_message='Deploy static application')"
             --repo-type space \
             --commit-message "Deploy static application"
 
