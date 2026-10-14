@@ -1,4 +1,3 @@
-
 name: ML Project CD
 
 on:
@@ -34,16 +33,6 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_ID: ${{ secrets.HF_SPACE_ID }}
         run: |
-          hf auth login --token "$HF_TOKEN"
-
-                    python -c "from huggingface_hub import HfApi; HfApi().upload_folder(folder_path='app', repo_id='$HF_SPACE_ID', repo_type='space', commit_message='Deploy static application')"
-            --repo-type space \
-            --commit-message "Deploy static application"
-
-          hf upload "$HF_SPACE_ID" model/ model \
-            --repo-type space \
-            --commit-message "Upload trained models"
-
-          hf upload "$HF_SPACE_ID" results/ results \
-            --repo-type space \
-            --commit-message "Upload evaluation results"
+          python -c "import os; from huggingface_hub import HfApi; HfApi(token=os.environ['HF_TOKEN']).upload_folder(folder_path='app', repo_id=os.environ['HF_SPACE_ID'], repo_type='space', commit_message='Deploy static application')"
+          python -c "import os; from huggingface_hub import HfApi; HfApi(token=os.environ['HF_TOKEN']).upload_folder(folder_path='model', path_in_repo='model', repo_id=os.environ['HF_SPACE_ID'], repo_type='space', commit_message='Upload trained models')"
+          python -c "import os; from huggingface_hub import HfApi; HfApi(token=os.environ['HF_TOKEN']).upload_folder(folder_path='results', path_in_repo='results', repo_id=os.environ['HF_SPACE_ID'], repo_type='space', commit_message='Upload evaluation results')"
